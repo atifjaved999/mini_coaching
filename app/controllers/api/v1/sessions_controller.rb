@@ -39,7 +39,12 @@ module Api
       end
 
       def book
-        session = Sessions::BookService.call(current_user:, session_id: params[:id])
+        session = Sessions::BookService.call(
+          current_user: current_user,
+          coach_id: params[:coach_id],
+          scheduled_at: params[:scheduled_at]
+        )
+
         render json: session, serializer: SessionSerializer, status: :ok
       rescue StandardError => e
         render json: { error: e.message }, status: :unprocessable_entity

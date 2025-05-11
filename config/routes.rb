@@ -15,11 +15,10 @@ Rails.application.routes.draw do
 
       resources :users, only: [:index, :update, :destroy]
       resources :sessions do
-        post :book, on: :member
+        post :book, on: :collection
         get :available, on: :collection
         resources :session_users, only: [:index, :create, :destroy]
       end
     end
   end
-
 end
