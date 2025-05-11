@@ -14,6 +14,8 @@ Rails.application.routes.draw do
       get 'sessions/coach_sessions', to: 'sessions#coach_sessions'
 
       resources :sessions do
+        post :book, on: :member
+        get :available, on: :collection
         resources :session_users, only: [:index, :create, :destroy]
       end
     end

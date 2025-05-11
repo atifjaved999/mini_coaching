@@ -2,7 +2,7 @@ module Api
   module V1
     class SessionsController < BaseController
       before_action :set_session, only: [:show, :update, :destroy]
-      before_action :authorize_coach, only: [:create, :update, :destroy]
+      before_action :authorize_coach, only: [:update, :destroy]
 
       def client_sessions
         sessions = Session.joins(:users)
@@ -38,6 +38,13 @@ module Api
         render json: { error: e.message }, status: :unprocessable_entity
       end
 
+      def book
+        session = Sessions::BookService.call(current_user:, session_id: params[:id])
+        render json: session, serializer: SessionSerializer, status: :ok
+      rescue StandardError => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      end
+
       def update
         session = Sessions::UpdateService.call(@session, session_params)
         render json: session, serializer: SessionSerializer, status: :ok
@@ -48,6 +55,15 @@ module Api
       def destroy
         Sessions::DestroyService.call(@session)
         head :no_content
+      end
+
+      def available
+        sessions = Session.includes(:users)
+                          .where(scheduled_at: params[:date])
+                          .where('start_time >= ? AND end_time <= ?', params[:start_time], params[:end_time])
+                          .select { |s| s.coaches.any? }
+
+        render json: sessions, each_serializer: SessionSerializer
       end
 
       private
