@@ -1,6 +1,5 @@
 class Session < ApplicationRecord
-  # resourcify
-  has_many :session_users
+  has_many :session_users, dependent: :destroy
   has_many :users, through: :session_users
 
 # Validations

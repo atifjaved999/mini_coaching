@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       get 'sessions/client_sessions', to: 'sessions#client_sessions'
       get 'sessions/coach_sessions', to: 'sessions#coach_sessions'
 
+      resources :users, only: [:index, :update, :destroy]
       resources :sessions do
         post :book, on: :member
         get :available, on: :collection

@@ -54,7 +54,7 @@ module Api
 
       def destroy
         Sessions::DestroyService.call(@session)
-        head :no_content
+        render json: { message: 'Session deleted successfully' }, status: :ok
       end
 
       def available
@@ -73,7 +73,13 @@ module Api
       end
 
       def session_params
-        params.require(:session).permit(:title, :description, :scheduled_at, :start_time, :end_time)
+        permitted = params.permit(:title, :description, :scheduled_at, :start_time, :end_time)
+
+        if params[:user_ids].present?
+          permitted[:user_ids] = params[:user_ids].is_a?(String) ? JSON.parse(params[:user_ids]) : params[:user_ids]
+        end
+
+        permitted
       end
 
       def authorize_coach
