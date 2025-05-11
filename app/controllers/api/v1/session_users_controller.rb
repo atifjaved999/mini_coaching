@@ -1,6 +1,7 @@
 module Api
   module V1
     class SessionUsersController < BaseController
+      skip_before_action :authenticate_user!
       before_action :set_session
       before_action :set_user, only: [:destroy]
 

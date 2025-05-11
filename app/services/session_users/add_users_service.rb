@@ -2,7 +2,7 @@ module SessionUsers
   class AddUsersService
     def initialize(session:, user_ids:)
       @session = session
-      @user_ids = Array(user_ids)
+      @user_ids = user_ids.is_a?(String) ? JSON.parse(user_ids) : user_ids
     end
 
     def call
