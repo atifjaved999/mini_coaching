@@ -1,7 +1,9 @@
 services:
   web:
     platform: linux/amd64 
-    build: .
+    build: 
+      context: .
+      dockerfile: app.Dockerfile
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0 -p 3000"
     volumes:
       - .:/app
@@ -12,13 +14,15 @@ services:
     environment:
       DATABASE_HOST: db
       DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: password
+      DATABASE_PASSWORD: postgres
       RAILS_MASTER_KEY: 96fd70b0bca008d00f9db205cb8f2a3f
       REDIS_URL: redis://redis:6379/0
 
   sidekiq:
     platform: linux/amd64 
-    build: .
+    build: 
+      context: .
+      dockerfile: app.Dockerfile
     command: bundle exec sidekiq
     networks:
       - nt-coaching-infra
@@ -27,7 +31,7 @@ services:
     environment:
       DATABASE_HOST: db
       DATABASE_USERNAME: postgres
-      DATABASE_PASSWORD: password
+      DATABASE_PASSWORD: postgres
       RAILS_MASTER_KEY: 96fd70b0bca008d00f9db205cb8f2a3f
       REDIS_URL: redis://redis:6379/0
       

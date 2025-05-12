@@ -4,11 +4,11 @@ services:
     networks:
       - nt-coaching-infra
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./data-dir/postgres01:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: app_development
+      POSTGRES_DB: postgres
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: postgres
     ports:
       - "5432:5432"
 
@@ -20,5 +20,3 @@ services:
 networks:
   nt-coaching-infra:
     name: nt-coaching-infra
-volumes:
-  postgres_data:

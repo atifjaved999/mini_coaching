@@ -40,6 +40,11 @@ module CoachingAppApi
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Add session and cookies middleware manually
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore, key: '_mini_coaching_session'
+
     config.active_job.queue_adapter = :sidekiq
   end
 end
