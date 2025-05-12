@@ -6,12 +6,14 @@ class User < ApplicationRecord
   has_many :sessions, through: :session_users  # Sessions where the user is a participant
 
   def generate_token
-    JwtToken.encode(user_id: self.id)  # Pass the user ID as part of the payload
+    JwtToken.encode({ 'user_id' => id })
   end
 
   # Class method to decode the JWT token and find the user
   def self.decode_token(token)
+    return nil unless token
+
     decoded = JwtToken.decode(token)
-    decoded ? find_by(id: decoded['user_id']) : nil  # Return the user if the token is valid
+    find_by(id: decoded['user_id']) if decoded
   end
 end

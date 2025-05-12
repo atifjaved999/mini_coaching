@@ -1,8 +1,8 @@
 module Api
   module V1
     class SessionsController < BaseController
+      load_and_authorize_resource except: [:client_sessions, :coach_sessions, :book]
       before_action :set_session, only: [:show, :update, :destroy]
-      before_action :authorize_coach, only: [:update, :destroy]
 
       def client_sessions
         sessions = Session.joins(:users)
@@ -23,7 +23,7 @@ module Api
       end
 
       def index
-        sessions = Sessions::FetchService.all
+        sessions = Cache::SessionCacheService.fetch_sessions
         render json: sessions, each_serializer: SessionSerializer, status: :ok
       end
 
@@ -60,6 +60,8 @@ module Api
       def destroy
         Sessions::DestroyService.call(@session)
         render json: { message: 'Session deleted successfully' }, status: :ok
+      rescue StandardError => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
 
       def available

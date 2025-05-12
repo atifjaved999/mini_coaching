@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :session_user do
-    session { nil }
-    user { nil }
+    association :session
+    association :user
   end
 end

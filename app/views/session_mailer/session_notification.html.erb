@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Hello <%= @user.name %>,</h1>
+    
+    <p>A new coaching session has been scheduled. Here are the details:</p>
+    
+    <div style="margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+      <h2><%= @session.title %></h2>
+      <p><strong>Description:</strong> <%= @session.description %></p>
+      <p><strong>Date:</strong> <%= @session.scheduled_at.strftime('%B %d, %Y') %></p>
+      <p><strong>Time:</strong> <%= @session.start_time.strftime('%I:%M %p') %> - <%= @session.end_time.strftime('%I:%M %p') %></p>
+      
+      <% if @role == 'Coach' %>
+        <p><strong>Clients:</strong> <%= @session.clients.map(&:name).join(', ') %></p>
+      <% else %>
+        <p><strong>Coaches:</strong> <%= @session.coaches.map(&:name).join(', ') %></p>
+      <% end %>
+    </div>
+
+    <p>You can view the full session details by logging into your account.</p>
+    
+    <p>Best regards,<br>Mini Coaching Team</p>
+  </body>
+</html>

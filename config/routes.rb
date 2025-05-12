@@ -4,14 +4,16 @@ Rails.application.routes.draw do
   
   namespace :api do
     namespace :v1 do
-      post 'signup', to: 'auth#signup'
-      post 'login', to: 'auth#login'
-      post 'forgot_password', to: 'auth#forgot_password'
-      post 'reset_password', to: 'auth#reset_password'
-      delete 'logout', to: 'auth#logout'
+      namespace :auth do
+        post 'signup'
+        post 'login'
+        post 'forgot_password'
+        post 'reset_password'
+        delete 'logout'
+      end
 
-      get 'sessions/client_sessions', to: 'sessions#client_sessions'
-      get 'sessions/coach_sessions', to: 'sessions#coach_sessions'
+      get 'client_sessions', to: 'sessions#client_sessions'
+      get 'coach_sessions', to: 'sessions#coach_sessions'
 
       resources :users, only: [:index, :update, :destroy]
       resources :sessions do

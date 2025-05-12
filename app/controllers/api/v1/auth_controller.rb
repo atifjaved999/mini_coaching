@@ -5,7 +5,8 @@ module Api
 
       def signup
         user = Auth::SignupService.call(signup_params)
-        render json: user, serializer: UserSerializer, status: :created
+        token = user.generate_token
+        render json: { token: token, user: user }, status: :created
       rescue StandardError => e
         render json: { error: e.message }, status: :unprocessable_entity
       end
@@ -20,16 +21,22 @@ module Api
       def forgot_password
         Auth::ForgotPasswordService.call(params[:email])
         render json: { message: 'Reset link sent' }, status: :ok
+      rescue StandardError => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
 
       def reset_password
         Auth::ResetPasswordService.call(params[:token], params[:password])
         render json: { message: 'Password updated' }, status: :ok
+      rescue StandardError => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
 
       def logout
         Auth::LogoutService.call(current_user) if current_user
         render json: { message: 'Logged out successfully' }, status: :ok
+      rescue StandardError => e
+        render json: { error: e.message }, status: :unauthorized
       end
 
       private

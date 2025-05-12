@@ -1,17 +1,25 @@
 module Api
   module V1
     class BaseController < ApplicationController
-      before_action :authenticate_user!
+      include CanCan::ControllerAdditions
 
+      before_action :authenticate_user!
       attr_reader :current_user
+
+      rescue_from CanCan::AccessDenied do |exception|
+        render json: { error: exception.message }, status: :forbidden
+      end
 
       private
 
       def authenticate_user!
         token = request.headers['Authorization']&.split(' ')&.last
-        decoded = JwtToken.decode(token)
-        @current_user = User.find_by(id: decoded["user_id"]) if decoded
-        render json: { success: false, error: 'Unauthorized' }, status: :unauthorized unless @current_user
+        @current_user = User.decode_token(token)
+        render json: { error: 'Unauthorized' }, status: :unauthorized unless @current_user
+      end
+
+      def current_ability
+        @current_ability ||= Ability.new(current_user)
       end
     end
   end

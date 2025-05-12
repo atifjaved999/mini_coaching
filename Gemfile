@@ -14,11 +14,13 @@ gem "puma", ">= 5.0"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
-# Use Redis adapter to run Action Cable in production
-# gem "redis", ">= 4.0.1"
+# Redis for caching and Sidekiq
+gem "redis"
+gem "cancancan", "~> 3.6.1"
+gem "redis-rails"
 
-# Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
-# gem "kredis"
+# Background job processing
+gem "sidekiq", ">= 7.0"
 
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
@@ -34,25 +36,23 @@ gem "bootsnap", require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem "rack-cors"
-# Background jobs
-gem 'sidekiq'
-# Redis (for cache store and jobs)
-gem 'redis'
 # JSON serialization
 gem 'active_model_serializers'
 # Role base
 gem 'rolify'
 # Json Web Token
-gem 'jwt'
+gem 'jwt', '~> 2.8'
 gem 'bcrypt', '~> 3.1.7' # if you haven't added bcrypt already for password hashing
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
-  gem 'pry'
+  gem 'letter_opener'  # Preview emails in the browser
   gem 'rspec-rails'
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'shoulda-matchers'
+  gem 'pry'
   gem 'database_cleaner-active_record'
 end
 

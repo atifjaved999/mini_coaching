@@ -1,6 +1,7 @@
 module Api
   module V1
     class UsersController < BaseController
+      before_action :authenticate_user!
       before_action :set_user, only: [:update, :destroy]
 
       def index
@@ -23,6 +24,8 @@ module Api
       def destroy
         Users::DestroyService.call(@user)
         render json: { message: "User deleted successfully" }, status: :ok
+      rescue StandardError => e
+        render json: { error: e.message }, status: :unprocessable_entity
       end
 
       private
