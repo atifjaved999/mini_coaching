@@ -5,7 +5,7 @@ FROM ruby:$RUBY_VERSION-slim as base
 
 WORKDIR /rails
 
-ENV RAILS_ENV="development" \
+ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_WITHOUT="development"
