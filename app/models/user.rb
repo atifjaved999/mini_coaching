@@ -2,6 +2,9 @@ class User < ApplicationRecord
   rolify
   has_secure_password
 
+  validates :email, presence: true, uniqueness: true
+  validates :name, presence: true
+
   has_many :session_users
   has_many :sessions, through: :session_users  # Sessions where the user is a participant
 
