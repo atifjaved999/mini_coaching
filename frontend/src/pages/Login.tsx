@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import AuthLayout from "@/components/auth/AuthLayout";
 import { useToast } from "@/hooks/use-toast";
 import { useLoginMutation } from "@/services/authApi";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/slices/authSlice";
 
 const Login = () => {
@@ -15,7 +15,6 @@ const Login = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const [login, { isLoading }] = useLoginMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {

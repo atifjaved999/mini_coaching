@@ -1,9 +1,16 @@
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Calendar, Home, MessageSquare, Settings, User } from "lucide-react";
+import { useSelector } from "react-redux";
+import {
+  selectCurrentUser,
+} from "@/slices/authSlice";
+import { useDispatch } from "react-redux";
+import { logout } from "@/slices/authSlice";
+import { useNavigate } from "react-router-dom";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -11,7 +18,20 @@ interface DashboardLayoutProps {
 
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const [collapsed, setCollapsed] = useState(false);
+  const user = useSelector(selectCurrentUser);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  console.log(user);
+  useEffect(()=>{
+    console.log(user);
+
+  },[user])
+
+  const handleLogout = () => {
+    dispatch(logout());        // clear auth data
+    navigate("/login");        // redirect to login page
+  };
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
@@ -65,27 +85,28 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 label="Sessions"
                 collapsed={collapsed}
               />
-              <NavItem
+              {/* <NavItem
                 to="/dashboard/messages"
                 icon={<MessageSquare className="h-5 w-5" />}
                 label="Messages"
                 collapsed={collapsed}
-              />
-              <NavItem
+              /> */}
+              {/* <NavItem
                 to="/dashboard/profile"
                 icon={<User className="h-5 w-5" />}
                 label="Profile"
                 collapsed={collapsed}
-              />
-              <NavItem
-                to="/dashboard/settings"
+              /> */}
+              {/* <NavItem
                 icon={<Settings className="h-5 w-5" />}
-                label="Settings"
+                label="Logout"
                 collapsed={collapsed}
-              />
+                onClick={handleLogout}
+                role={button}
+              /> */}
             </ul>
           </nav>
-
+          <Button className="w-full" onClick={handleLogout}>Logout</Button>
           <div className="p-4 border-t border-gray-200">
             <div
               className={cn(
@@ -98,8 +119,8 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               </div>
               {!collapsed && (
                 <div>
-                  <p className="text-sm font-medium">John Doe</p>
-                  <p className="text-xs text-gray-500">john@example.com</p>
+                  <p className="text-sm font-medium">{user?.name}</p>
+                  <p className="text-xs text-gray-500">{user?.email}</p>
                 </div>
               )}
             </div>
