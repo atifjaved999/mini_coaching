@@ -13,10 +13,13 @@ module Api
 
       def login
         token, user = Auth::LoginService.call(login_params)
-        render json: { token: token, user: user }, status: :ok
+        render json: {
+          token: token,
+          user: user.as_json.merge(roles: user.roles.pluck(:name))
+        }, status: :ok
       rescue StandardError => e
         render json: { error: e.message }, status: :unauthorized
-      end
+      end      
 
       def forgot_password
         Auth::ForgotPasswordService.call(params[:email])

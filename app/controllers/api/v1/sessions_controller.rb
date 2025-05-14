@@ -32,7 +32,7 @@ module Api
       end
 
       def create
-        session = Sessions::CreateService.call(session_params)
+        session = Sessions::CreateService.call(session_params, current_user)
         render json: session, serializer: SessionSerializer, status: :created
       rescue StandardError => e
         render json: { error: e.message }, status: :unprocessable_entity

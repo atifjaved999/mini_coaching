@@ -1,10 +1,11 @@
 module Sessions
   class CreateService
-    def self.call(params)
+    def self.call(params, current_user)
       ActiveRecord::Base.transaction do
         # Create session and associate users
         user_ids = params.delete(:user_ids)
         session = Session.create!(params)
+        SessionUser.create!(session: session, user: current_user) # making entry to middle table
 
         if user_ids.present?
           users = User.where(id: user_ids)
