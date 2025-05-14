@@ -4,8 +4,12 @@ module Sessions
       ActiveRecord::Base.transaction do
         # Create session and associate users
         user_ids = params.delete(:user_ids)
-        session = Session.create!(params)
-        SessionUser.create!(session: session, user: current_user) # making entry to middle table
+        # session = Session.create!(params)
+        session = Session.new(params)
+        session.current_user = current_user  # inject current_user
+        if session.save!
+          SessionUser.create!(session: session, user: current_user) # making entry to middle table
+        end
 
         if user_ids.present?
           users = User.where(id: user_ids)
