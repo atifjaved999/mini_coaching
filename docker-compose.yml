@@ -18,6 +18,23 @@ services:
       RAILS_MASTER_KEY: 96fd70b0bca008d00f9db205cb8f2a3f
       REDIS_URL: redis://redis:6379/0
 
+  frontend:
+    platform: linux/amd64
+    build:
+      context: ./frontend
+      dockerfile: app.Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend:/app          # Only mount frontend code
+      - /app/node_modules        # Persist node_modules (prevent host override)
+    working_dir: /app
+    command: yarn dev
+    networks:
+      - nt-coaching-infra
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+
   sidekiq:
     platform: linux/amd64 
     build: 
