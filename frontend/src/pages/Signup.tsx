@@ -1,35 +1,49 @@
-
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import AuthLayout from "@/components/auth/AuthLayout";
 import { useToast } from "@/hooks/use-toast";
+import { useSignupMutation } from "@/services/authApi";
+import { setCredentials } from "@/slices/authSlice";
 
 const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState("client");
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [signup, { isLoading }] = useSignupMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    
-    // Simulate signup API call
-    setTimeout(() => {
-      // This would normally be an API call to create account
+
+    try {
+      const res = await signup({ name, email, password, role: userType }).unwrap();
+      // Save to Redux
+      dispatch(setCredentials(res));
+      localStorage.setItem("token", res.token);
+      localStorage.setItem("user", JSON.stringify(res.user));
+
       toast({
         title: "Account created!",
         description: "You have successfully created your account.",
       });
-      setIsLoading(false);
-      // Redirect would happen here in a real app
-    }, 1500);
+
+      navigate("/login");
+    } catch (err) {
+      toast({
+        title: "Signup failed",
+        description: err?.data?.error || "An error occurred during signup.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -76,8 +90,7 @@ const Signup = () => {
         <div className="space-y-2">
           <Label>I am a:</Label>
           <RadioGroup 
-            defaultValue="client" 
-            value={userType} 
+            value={userType}
             onValueChange={setUserType}
             className="flex space-x-4"
           >
@@ -91,11 +104,7 @@ const Signup = () => {
             </div>
           </RadioGroup>
         </div>
-        <Button
-          type="submit"
-          className="w-full"
-          disabled={isLoading}
-        >
+        <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? "Creating account..." : "Create account"}
         </Button>
         <div className="text-center mt-4">
